@@ -4,8 +4,6 @@ import { z } from "zod";
 import { redisClient } from "@/lib/redis";
 import { UserRoles } from "@/server/schema";
 
-
-
 // Seven days in seconds
 const SESSION_EXPIRATION_SECONDS = 60 * 60 * 24 * 7;
 const COOKIE_SESSION_KEY = "session-id";

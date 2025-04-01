@@ -1,11 +1,8 @@
 "use server";
 
-
 import { z } from "zod";
 
 import { companySchema } from "./types";
-
-
 
 enum AuthError {
   INVALID_CREDENTIALS = "The email or password you entered is incorrect",
@@ -27,12 +24,9 @@ export async function addNewCompany(unsafeData: z.infer<typeof companySchema>) {
       return `${AuthError.INVALID_INPUT}: ${errorMessage}`;
     }
 
-    
-
     return { success: "Login successful" };
   } catch (error) {
     console.error("Sign-in error:", error);
     return { error: AuthError.SYSTEM_ERROR };
   }
 }
-

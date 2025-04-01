@@ -8,10 +8,8 @@ import { eq } from "drizzle-orm";
 
 import { db } from "@/server/db";
 import { UsersTable } from "@/server/schema";
+
 import { getUserFromSession } from "./session";
-
-
-
 
 export type FullUser = Exclude<
   Awaited<ReturnType<typeof getUserFromDb>>,

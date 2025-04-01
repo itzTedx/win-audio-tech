@@ -1,7 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { getUserFromSession, updateUserSessionExpiration } from "./services/auth/lib/session";
 
-
+import {
+  getUserFromSession,
+  updateUserSessionExpiration,
+} from "./services/auth/lib/session";
 
 const privateRoutes = ["/test"];
 
