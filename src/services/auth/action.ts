@@ -10,9 +10,9 @@ import { db } from "@/server/db";
 import { UsersTable } from "@/server/schema";
 
 import {
-    comparePasswords,
-    generateSalt,
-    hashPassword,
+  comparePasswords,
+  generateSalt,
+  hashPassword,
 } from "./lib/password-hasher";
 import { createUserSession, removeUserFromSession } from "./lib/session";
 import { signInSchema, signUpSchema } from "./types";
