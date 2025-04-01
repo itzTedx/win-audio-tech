@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+
 import { AppSidebar } from "@/components/app-sidebar";
 import {
   Breadcrumb,
@@ -13,8 +15,13 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { getCurrentUser } from "@/services/auth/lib/current-user";
 
-export default function Page() {
+export default async function Page() {
+  const user = await getCurrentUser();
+
+  if (!user) redirect("/sign-in");
+
   return (
     <SidebarProvider>
       <AppSidebar />
