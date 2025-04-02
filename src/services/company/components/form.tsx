@@ -9,6 +9,7 @@ import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { UploadDropzone } from "@/lib/uploadthing";
 
 import {
   Form,
@@ -74,11 +75,28 @@ export function CompanyForm() {
             render={({ field }) => (
               <FormItem>
                 <div className="flex items-center">
-                  <FormLabel htmlFor="password">Password</FormLabel>
+                  <FormLabel htmlFor="password">Company Logo</FormLabel>
                 </div>
                 <FormControl>
                   <div className="relative">
-                    <Input {...field} />
+                    <UploadDropzone
+                      endpoint="imageUploader"
+                      appearance={{
+                        button:
+                          "ut-ready:bg-green-500 ut-uploading:cursor-not-allowed rounded-r-none bg-red-500 bg-none after:bg-orange-400",
+                        container:
+                          "w-max flex-row rounded-md border-cyan-300 bg-slate-800",
+                        allowedContent:
+                          "flex h-8 flex-col items-center justify-center px-2 text-white",
+                      }}
+                      onClientUploadComplete={(res) => {
+                        console.log("Files: ", res);
+                        alert("Upload Completed");
+                      }}
+                      onUploadError={(error: Error) => {
+                        alert(`ERROR! ${error.message}`);
+                      }}
+                    />
                   </div>
                 </FormControl>
                 <FormMessage />
