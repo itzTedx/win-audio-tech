@@ -1,8 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -23,8 +23,6 @@ import { addNewCompany } from "../action";
 import { companySchema } from "../types";
 
 export function CompanyForm() {
-  const router = useRouter();
-  const [error, setError] = useState<string>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof companySchema>>({
@@ -36,19 +34,19 @@ export function CompanyForm() {
 
   async function onSubmit(data: z.infer<typeof companySchema>) {
     setIsLoading(true);
-    setError(undefined);
 
     try {
       const result = await addNewCompany(data);
       if (typeof result !== "string" && result.success) {
-        toast.success("Login successful!");
-        router.push("/");
+        toast.success("Company Created!");
       }
       if (typeof result !== "string" && result.error) {
-        setError(result.error);
+        toast.dismiss();
+        toast.error(result.error);
       }
     } finally {
       setIsLoading(false);
+      toast.dismiss();
     }
   }
 
@@ -86,11 +84,11 @@ export function CompanyForm() {
                       }}
                       appearance={{
                         button:
-                          "ut-ready:bg-green-500 ut-uploading:cursor-not-allowed rounded-r-none bg-red-500 bg-none after:bg-orange-400",
+                          "ut-ready:bg-green-500 ut-uploading:cursor-not-allowed bg-red-500 bg-none after:bg-green-600",
                         container:
                           "rounded-md  border-input dark:bg-input/30 bg-transparent focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
                         allowedContent:
-                          "flex h-8 flex-col items-center justify-center px-2 text-white",
+                          "flex h-8 flex-col items-center justify-center px-2 text-muted-foreground",
                       }}
                       onUploadBegin={() => {
                         toast.loading("Uploading...");
@@ -113,7 +111,13 @@ export function CompanyForm() {
           />
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Signing in..." : "Sign in"}
+            {isLoading ? (
+              <span>
+                <Loader2 className="animate-spin" /> Signing in...
+              </span>
+            ) : (
+              "Add New"
+            )}
           </Button>
         </div>
       </form>
