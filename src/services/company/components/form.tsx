@@ -81,20 +81,28 @@ export function CompanyForm() {
                   <div className="relative">
                     <UploadDropzone
                       endpoint="imageUploader"
+                      config={{
+                        mode: "auto",
+                      }}
                       appearance={{
                         button:
                           "ut-ready:bg-green-500 ut-uploading:cursor-not-allowed rounded-r-none bg-red-500 bg-none after:bg-orange-400",
                         container:
-                          "w-max flex-row rounded-md border-cyan-300 bg-slate-800",
+                          "rounded-md  border-input dark:bg-input/30 bg-transparent focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
                         allowedContent:
                           "flex h-8 flex-col items-center justify-center px-2 text-white",
                       }}
+                      onUploadBegin={() => {
+                        toast.loading("Uploading...");
+                      }}
                       onClientUploadComplete={(res) => {
                         console.log("Files: ", res);
-                        alert("Upload Completed");
+                        toast.dismiss();
+                        toast.success("Upload Completed");
                       }}
                       onUploadError={(error: Error) => {
-                        alert(`ERROR! ${error.message}`);
+                        toast.dismiss();
+                        toast.error(`ERROR! ${error.message}`);
                       }}
                     />
                   </div>
