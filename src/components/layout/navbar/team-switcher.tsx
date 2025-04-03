@@ -2,8 +2,10 @@
 
 import * as React from "react";
 
-import { ChevronsUpDown } from "lucide-react";
+import { ChevronsUpDown, Plus } from "lucide-react";
+import { parseAsBoolean, useQueryState } from "nuqs";
 
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,16 +20,28 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import CompanyModal from "@/services/company/components/modal";
 import { CompanyType } from "@/services/company/types";
 
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 
 export function TeamSwitcher({ data }: { data: CompanyType[] }) {
   const [activeTeam, setActiveTeam] = React.useState(data[0]);
+  const [_, setCompanyModal] = useQueryState(
+    "companyModal",
+    parseAsBoolean.withDefault(false)
+  );
 
   if (!activeTeam) {
-    return null;
+    return (
+      <Button
+        variant="outline"
+        onClick={() => setCompanyModal(true)}
+        type="button"
+      >
+        <Plus className="size-4" />
+        Add Company
+      </Button>
+    );
   }
 
   return (
@@ -39,9 +53,11 @@ export function TeamSwitcher({ data }: { data: CompanyType[] }) {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+              <Avatar className="text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                 <AvatarImage src={activeTeam.logo!} />
-                <AvatarFallback> {activeTeam.name.charAt(0)}</AvatarFallback>
+                <AvatarFallback className="bg-sidebar-primary">
+                  {activeTeam.name.charAt(0)}
+                </AvatarFallback>
               </Avatar>
 
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -57,7 +73,7 @@ export function TeamSwitcher({ data }: { data: CompanyType[] }) {
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-muted-foreground text-xs">
-              Teams
+              Companies
             </DropdownMenuLabel>
             {data.map((team, index) => (
               <DropdownMenuItem
@@ -65,13 +81,29 @@ export function TeamSwitcher({ data }: { data: CompanyType[] }) {
                 onClick={() => setActiveTeam(team)}
                 className="gap-2 p-2"
               >
-                <div className="flex size-6 items-center justify-center rounded-md border"></div>
+                <Avatar className="text-sidebar-primary-foreground flex aspect-square size-6 items-center justify-center rounded-lg">
+                  <AvatarImage src={team.logo!} />
+                  <AvatarFallback className="bg-sidebar-primary">
+                    {team.name.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+
                 {team.name}
                 <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <CompanyModal />
+            <Button
+              variant="ghost"
+              type="button"
+              onClick={() => setCompanyModal(true)}
+              className="w-full justify-start px-2"
+            >
+              <div className="flex size-6 items-center justify-center rounded-md border">
+                <Plus className="size-4" />
+              </div>
+              Add Company
+            </Button>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

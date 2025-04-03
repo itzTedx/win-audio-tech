@@ -1,34 +1,26 @@
-import { Plus } from "lucide-react";
+"use client";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { parseAsBoolean, useQueryState } from "nuqs";
+
+import { ResponsiveModal } from "@/components/responsive-modal";
 
 import { CompanyForm } from "./form";
 
 export default function CompanyModal() {
+  const [companyModal, setCompanyModal] = useQueryState(
+    "companyModal",
+    parseAsBoolean.withDefault(false)
+  );
+
   return (
-    <Dialog>
-      <DialogTrigger className="bg hover:bg-sidebar-accent flex w-full cursor-pointer gap-1.5 rounded-md p-2">
-        <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
-          <Plus className="size-4" />
-        </div>
-        Add Company
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Add New Company</DialogTitle>
-          <DialogDescription className="sr-only">
-            Add New Company
-          </DialogDescription>
-        </DialogHeader>
-        <CompanyForm />
-      </DialogContent>
-    </Dialog>
+    <ResponsiveModal
+      open={Boolean(companyModal)}
+      onOpenChange={setCompanyModal}
+      title="Add New Company"
+      className="max-w-xl"
+      asChild
+    >
+      <CompanyForm />
+    </ResponsiveModal>
   );
 }

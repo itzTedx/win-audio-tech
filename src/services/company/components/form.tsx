@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { Loader2 } from "lucide-react";
+import { parseAsBoolean, useQueryState } from "nuqs";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -32,6 +33,11 @@ export function CompanyForm() {
     },
   });
 
+  const [_, setCompanyModal] = useQueryState(
+    "companyModal",
+    parseAsBoolean.withDefault(false)
+  );
+
   async function onSubmit(data: z.infer<typeof companySchema>) {
     setIsLoading(true);
 
@@ -39,6 +45,7 @@ export function CompanyForm() {
       const result = await addNewCompany(data);
       if (typeof result !== "string" && result.success) {
         toast.success("Company Created!");
+        setCompanyModal(false);
       }
       if (typeof result !== "string" && result.error) {
         toast.dismiss();
@@ -52,7 +59,10 @@ export function CompanyForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-8 px-6 pb-4"
+      >
         <div className="flex flex-col gap-6">
           <FormField
             control={form.control}
@@ -94,12 +104,15 @@ export function CompanyForm() {
                         toast.loading("Uploading...");
                       }}
                       onClientUploadComplete={(res) => {
-                        console.log("Files: ", res);
+                        setIsLoading(false);
+
+                        form.setValue("logo", res[0].url);
                         toast.dismiss();
-                        toast.success("Upload Completed");
+                        toast.success("Logo Uploaded");
                       }}
                       onUploadError={(error: Error) => {
                         toast.dismiss();
+                        form.setError("logo", error);
                         toast.error(`ERROR! ${error.message}`);
                       }}
                     />
@@ -112,7 +125,7 @@ export function CompanyForm() {
 
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? (
-              <span>
+              <span className="flex items-center gap-1.5">
                 <Loader2 className="animate-spin" /> Signing in...
               </span>
             ) : (
