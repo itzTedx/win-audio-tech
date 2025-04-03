@@ -14,7 +14,7 @@ import { CompanyForm } from "./form";
 export default function CompanyModal() {
   return (
     <Dialog>
-      <DialogTrigger className="flex cursor-pointer gap-1.5 p-2">
+      <DialogTrigger className="bg hover:bg-sidebar-accent flex w-full cursor-pointer gap-1.5 rounded-md p-2">
         <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
           <Plus className="size-4" />
         </div>

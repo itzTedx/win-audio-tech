@@ -1,9 +1,11 @@
 "use server";
 
-import { db } from "@/server/db";
-import { CompaniesTable } from "@/server/schema";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
+
+import { db } from "@/server/db";
+import { CompaniesTable } from "@/server/schema";
+
 import { companySchema } from "./types";
 
 enum CompanyError {
@@ -23,27 +25,27 @@ export async function addNewCompany(unsafeData: z.infer<typeof companySchema>) {
       return { error: `${CompanyError.INVALID_INPUT}: ${errorMessage}` };
     }
 
+    let existingCompany;
+    try {
+      existingCompany = await db.query.UsersTable.findFirst({
+        where: eq(CompaniesTable.name, data.name),
+      });
+    } catch (error) {
+      console.error("Database error checking existing user:", error);
+      return { error: CompanyError.SYSTEM_ERROR };
+    }
 
-     let existingCompany;
-        try {
-          existingCompany = await db.query.UsersTable.findFirst({
-            where: eq(CompaniesTable.name, data.name),
-          });
-        } catch (error) {
-          console.error("Database error checking existing user:", error);
-          return { error: CompanyError.SYSTEM_ERROR };
-        }
-    
-        if (existingCompany != null) {
-          return { error: CompanyError.COMPANY_EXISTS };
-        }
-    
-   
+    if (existingCompany != null) {
+      return { error: CompanyError.COMPANY_EXISTS };
+    }
 
-    const [newCompany] = await db.insert(CompaniesTable).values({
-      name: data.name,
-      logo: data.logo,
-    }).returning({ name: CompaniesTable.name });
+    const [newCompany] = await db
+      .insert(CompaniesTable)
+      .values({
+        name: data.name,
+        logo: data.logo,
+      })
+      .returning({ name: CompaniesTable.name });
 
     if (!newCompany) {
       console.error("Company creation failed: No new company data returned");
@@ -53,6 +55,18 @@ export async function addNewCompany(unsafeData: z.infer<typeof companySchema>) {
     return { success: "Company created successfully!" };
   } catch (error) {
     console.error("Company creation error:", error);
+    return { error: CompanyError.SYSTEM_ERROR };
+  }
+}
+
+export async function getCompanies() {
+  try {
+    const companies = await db.query.CompaniesTable.findMany();
+
+    return {companies}
+
+  } catch (error) {
+    console.error("Company fetching error:", error);
     return { error: CompanyError.SYSTEM_ERROR };
   }
 }
