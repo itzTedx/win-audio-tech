@@ -1,3 +1,3 @@
 export default function Products() {
-  return <div>Products</div>;
+  return <section className="p-6">Products</section>;
 }

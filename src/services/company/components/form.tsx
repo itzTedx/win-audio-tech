@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Loader2 } from "lucide-react";
@@ -9,9 +10,6 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { UploadDropzone } from "@/lib/uploadthing";
-
 import {
   Form,
   FormControl,
@@ -19,11 +17,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../../components/ui/form";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { UploadDropzone } from "@/lib/uploadthing";
+
 import { addNewCompany } from "../action";
 import { companySchema } from "../types";
 
 export function CompanyForm({ userId }: { userId: string }) {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof companySchema>>({
@@ -45,6 +47,7 @@ export function CompanyForm({ userId }: { userId: string }) {
       const result = await addNewCompany(data, userId);
       if (typeof result !== "string" && result.success) {
         toast.success("Company Created!");
+        router.push(`/${result.slug}`);
         setCompanyModal(false);
       }
       if (typeof result !== "string" && result.error) {
@@ -126,7 +129,7 @@ export function CompanyForm({ userId }: { userId: string }) {
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? (
               <span className="flex items-center gap-1.5">
-                <Loader2 className="animate-spin" /> Signing in...
+                <Loader2 className="animate-spin" /> Creating...
               </span>
             ) : (
               "Add New"

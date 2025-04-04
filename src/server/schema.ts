@@ -1,4 +1,4 @@
-import { pgEnum, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { numeric, pgEnum, pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 
 export const UserRoles = ["admin", "user"] as const;
 export type UserRole = (typeof UserRoles)[number];
@@ -20,7 +20,7 @@ export const UsersTable = pgTable("users", {
 export const CompaniesTable = pgTable("companies", {
   id: uuid().primaryKey().defaultRandom(),
   name: text("name").notNull(),
-  slug: text("slug").notNull().unique(),
+  slug: varchar("slug").notNull().unique(),
   logo: text("logo"),
   user: uuid("user_id")
     .notNull()
@@ -30,3 +30,34 @@ export const CompaniesTable = pgTable("companies", {
     .defaultNow()
     .$onUpdate(() => new Date()),
 });
+
+export const ProductsTable = pgTable("products", {
+  id: uuid().primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  slug: text("slug").notNull().unique(),
+  image: text("logo"),
+
+  price: numeric('price', { precision: 10, scale: 2 }).notNull(),
+
+  user: uuid("user_id") 
+    .notNull()
+    .references(() => UsersTable.id),
+  createdAt: timestamp("createdAt").defaultNow(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
+
+export const ProductCategoriesTable = pgTable("product_categories", {
+  id: uuid().primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+ 
+  user: uuid("user_id") 
+    .notNull()
+    .references(() => UsersTable.id),
+  createdAt: timestamp("createdAt").defaultNow(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
+
