@@ -40,15 +40,15 @@ export function NavMain({
       items: [
         {
           title: "Invoice",
-          url: "/invoice",
+          url: `/${params.company}/invoice`,
         },
         {
           title: "Quotation",
-          url: "/quotation",
+          url: `/${params.company}/quotations`,
         },
         {
           title: "Report",
-          url: "/report",
+          url: `/${params.company}/report`,
         },
       ],
     },
