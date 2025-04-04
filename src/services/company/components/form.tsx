@@ -45,7 +45,7 @@ export function CompanyForm({ userId }: { userId: string }) {
 
     try {
       const result = await addNewCompany(data, userId);
-      if (typeof result !== "string" && result.success) {
+      if (typeof result !== "string" && "success" in result) {
         toast.success("Company Created!");
         router.push(`/${result.slug}`);
         setCompanyModal(false);
@@ -62,10 +62,7 @@ export function CompanyForm({ userId }: { userId: string }) {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-8 px-6 pb-4"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="flex flex-col gap-6">
           <FormField
             control={form.control}

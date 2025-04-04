@@ -56,7 +56,7 @@ export const ResponsiveModal = ({
               <DrawerDescription className="sr-only">{title}</DrawerDescription>
             )}
           </DrawerHeader>
-          {children}
+          <div className="px-6 pb-4">{children}</div>
         </DrawerContent>
       </Drawer>
     );
@@ -72,7 +72,7 @@ export const ResponsiveModal = ({
             <DialogDescription className="sr-only">{title}</DialogDescription>
           )}
         </DialogHeader>
-        {children}
+        <div className="px-6 pb-4">{children}</div>
       </DialogContent>
     </Dialog>
   );
