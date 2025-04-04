@@ -22,7 +22,13 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 
-export function NavMain({}) {
+import { updateCollapsibleState } from "./actions";
+
+export function NavMain({
+  collapsibleState,
+}: {
+  collapsibleState?: Record<string, boolean>;
+}) {
   const params = useParams<{ company: string }>();
 
   const items = [
@@ -76,7 +82,10 @@ export function NavMain({}) {
           <Collapsible
             key={item.title}
             asChild
-            defaultOpen={item.isActive}
+            defaultOpen={collapsibleState?.[item.title] ?? item.isActive}
+            onOpenChange={(isOpen) =>
+              updateCollapsibleState(item.title, isOpen)
+            }
             className="group/collapsible"
           >
             <SidebarMenuItem>

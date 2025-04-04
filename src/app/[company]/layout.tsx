@@ -12,11 +12,14 @@ export default async function MainLayout({
 }>) {
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
+  const collapsibleState = cookieStore.get("sidebar_collapsible")?.value
+    ? JSON.parse(cookieStore.get("sidebar_collapsible")!.value)
+    : {};
 
   const user = await getCurrentUser();
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
-      <AppSidebar user={user} />
+      <AppSidebar user={user} collapsibleState={collapsibleState} />
       <div className="flex min-h-screen w-full flex-col">
         <Navbar />
         <SidebarInset>{children}</SidebarInset>

@@ -26,6 +26,8 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 
+import { updateSidebarState } from "../layout/sidebar/actions";
+
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 const SIDEBAR_WIDTH = "16rem";
@@ -56,6 +58,7 @@ function useSidebar() {
 
 function SidebarProvider({
   defaultOpen = true,
+  collapsibleState,
   open: openProp,
   onOpenChange: setOpenProp,
   className,
@@ -64,6 +67,7 @@ function SidebarProvider({
   ...props
 }: React.ComponentProps<"div"> & {
   defaultOpen?: boolean;
+  collapsibleState?: Record<string, boolean>;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 }) {
@@ -127,10 +131,17 @@ function SidebarProvider({
     [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar]
   );
 
+  React.useEffect(() => {
+    if (open !== undefined) {
+      updateSidebarState(open);
+    }
+  }, [open]);
+
   return (
     <SidebarContext.Provider value={contextValue}>
       <TooltipProvider delayDuration={0}>
         <div
+          data-collapsible-state={JSON.stringify(collapsibleState)}
           data-slot="sidebar-wrapper"
           style={
             {
