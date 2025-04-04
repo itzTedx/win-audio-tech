@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 
 import { IconArrowLeft } from "@tabler/icons-react";
 
+import { cn } from "@/lib/utils";
+
 import { Button } from "./button";
 
 interface Props {
@@ -12,6 +14,7 @@ interface Props {
   description?: string;
   count?: number;
   withBackButton?: boolean;
+  className?: string;
 }
 
 export function Header({
@@ -20,10 +23,13 @@ export function Header({
   description,
   count,
   withBackButton,
+  className,
 }: Props) {
   const router = useRouter();
   return (
-    <header className="flex items-center justify-between gap-4">
+    <header
+      className={cn("flex items-center justify-between gap-4", className)}
+    >
       <div>
         <div className="flex items-center">
           {withBackButton && (

@@ -12,7 +12,7 @@ export default async function Products({
 }) {
   const { company } = await params;
   return (
-    <div className="p-6">
+    <div className="container py-6">
       <Header
         title="Products"
         description="Breif overview of product features and benefits"
