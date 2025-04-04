@@ -1,4 +1,12 @@
-import { numeric, pgEnum, pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import {
+  numeric,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+  varchar,
+} from "drizzle-orm/pg-core";
 
 export const UserRoles = ["admin", "user"] as const;
 export type UserRole = (typeof UserRoles)[number];
@@ -37,9 +45,9 @@ export const ProductsTable = pgTable("products", {
   slug: text("slug").notNull().unique(),
   image: text("logo"),
 
-  price: numeric('price', { precision: 10, scale: 2 }).notNull(),
+  price: numeric("price", { precision: 10, scale: 2 }).notNull(),
 
-  user: uuid("user_id") 
+  user: uuid("user_id")
     .notNull()
     .references(() => UsersTable.id),
   createdAt: timestamp("createdAt").defaultNow(),
@@ -51,8 +59,8 @@ export const ProductsTable = pgTable("products", {
 export const ProductCategoriesTable = pgTable("product_categories", {
   id: uuid().primaryKey().defaultRandom(),
   name: text("name").notNull(),
- 
-  user: uuid("user_id") 
+
+  user: uuid("user_id")
     .notNull()
     .references(() => UsersTable.id),
   createdAt: timestamp("createdAt").defaultNow(),
@@ -60,4 +68,3 @@ export const ProductCategoriesTable = pgTable("product_categories", {
     .defaultNow()
     .$onUpdate(() => new Date()),
 });
-

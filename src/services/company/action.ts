@@ -65,12 +65,17 @@ export async function addNewCompany(
           });
 
         if (!newCompany?.id) {
-          console.error("Company creation failed: No new company data returned");
+          console.error(
+            "Company creation failed: No new company data returned"
+          );
           return { error: CompanyError.CREATION_FAILED };
         }
 
         revalidatePath("/");
-        return { success: "Company created successfully!", slug: newCompany.slug };
+        return {
+          success: "Company created successfully!",
+          slug: newCompany.slug,
+        };
       } catch (error) {
         console.error("Database operation failed:", error);
         return { error: CompanyError.DATABASE_ERROR };
