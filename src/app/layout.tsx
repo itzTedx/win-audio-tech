@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
 
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
@@ -46,7 +47,9 @@ export default function RootLayout({
             <SidebarProvider>
               <AppSidebar />
               <SidebarInset>{children}</SidebarInset>
-              <CompanyModal />
+              <Suspense fallback={<div>Loading...</div>}>
+                <CompanyModal />
+              </Suspense>
               <Toaster />
             </SidebarProvider>
           </ThemeProvider>
