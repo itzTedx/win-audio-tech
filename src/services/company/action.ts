@@ -1,12 +1,13 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 
 import { db } from "@/server/db";
 import { CompaniesTable } from "@/server/schema";
 
-import { revalidatePath } from "next/cache";
 import { companySchema } from "./types";
 import { slugify } from "./utils";
 
@@ -18,7 +19,10 @@ enum CompanyError {
   INVALID_LOGO = "Invalid logo format or size",
 }
 
-export async function addNewCompany(unsafeData: z.infer<typeof companySchema>, userId: string) {
+export async function addNewCompany(
+  unsafeData: z.infer<typeof companySchema>,
+  userId: string
+) {
   try {
     const { success, data, error } = companySchema.safeParse(unsafeData);
 
@@ -40,8 +44,6 @@ export async function addNewCompany(unsafeData: z.infer<typeof companySchema>, u
     if (existingCompany != null) {
       return { error: CompanyError.COMPANY_EXISTS };
     }
-
-
 
     const [newCompany] = await db
       .insert(CompaniesTable)
@@ -82,11 +84,10 @@ export async function getCompanyBySlug(slug: string) {
   try {
     const company = await db.query.CompaniesTable.findFirst({
       where: eq(CompaniesTable.slug, slug),
-     
     });
 
-    if(!company) {
-      return {error: CompanyError.SYSTEM_ERROR};
+    if (!company) {
+      return { error: CompanyError.SYSTEM_ERROR };
     }
 
     return { company };
@@ -95,4 +96,3 @@ export async function getCompanyBySlug(slug: string) {
     return { error: CompanyError.SYSTEM_ERROR };
   }
 }
-
