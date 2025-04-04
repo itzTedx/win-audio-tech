@@ -6,7 +6,9 @@ import { z } from "zod";
 import { db } from "@/server/db";
 import { CompaniesTable } from "@/server/schema";
 
+import { revalidatePath } from "next/cache";
 import { companySchema } from "./types";
+import { slugify } from "./utils";
 
 enum CompanyError {
   INVALID_INPUT = "Invalid company information provided",
@@ -16,7 +18,7 @@ enum CompanyError {
   INVALID_LOGO = "Invalid logo format or size",
 }
 
-export async function addNewCompany(unsafeData: z.infer<typeof companySchema>) {
+export async function addNewCompany(unsafeData: z.infer<typeof companySchema>, userId: string) {
   try {
     const { success, data, error } = companySchema.safeParse(unsafeData);
 
@@ -39,11 +41,15 @@ export async function addNewCompany(unsafeData: z.infer<typeof companySchema>) {
       return { error: CompanyError.COMPANY_EXISTS };
     }
 
+
+
     const [newCompany] = await db
       .insert(CompaniesTable)
       .values({
         name: data.name,
         logo: data.logo,
+        slug: slugify(data.name),
+        user: userId,
       })
       .returning({ name: CompaniesTable.name });
 
@@ -51,6 +57,8 @@ export async function addNewCompany(unsafeData: z.infer<typeof companySchema>) {
       console.error("Company creation failed: No new company data returned");
       return { error: CompanyError.CREATION_FAILED };
     }
+
+    revalidatePath("/dashboard");
 
     return { success: "Company created successfully!" };
   } catch (error) {
@@ -63,10 +71,28 @@ export async function getCompanies() {
   try {
     const companies = await db.query.CompaniesTable.findMany();
 
-    return {companies}
+    return { companies };
+  } catch (error) {
+    console.error("Companies fetching error:", error);
+    return { error: CompanyError.SYSTEM_ERROR };
+  }
+}
 
+export async function getCompanyBySlug(slug: string) {
+  try {
+    const company = await db.query.CompaniesTable.findFirst({
+      where: eq(CompaniesTable.slug, slug),
+     
+    });
+
+    if(!company) {
+      return {error: CompanyError.SYSTEM_ERROR};
+    }
+
+    return { company };
   } catch (error) {
     console.error("Company fetching error:", error);
     return { error: CompanyError.SYSTEM_ERROR };
   }
 }
+

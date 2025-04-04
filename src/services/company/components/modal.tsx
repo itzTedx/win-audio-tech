@@ -12,15 +12,22 @@ export default function CompanyModal() {
     parseAsBoolean.withDefault(false)
   );
 
+  const [userId, setUserId] = useQueryState("user");
+
+  if (!userId) return null;
+
   return (
     <ResponsiveModal
       open={Boolean(companyModal)}
-      onOpenChange={setCompanyModal}
+      onOpenChange={(isOpen) => {
+        setCompanyModal(isOpen);
+        if (!isOpen) setUserId(null);
+      }}
       title="Add New Company"
       className="max-w-xl"
       asChild
     >
-      <CompanyForm />
+      <CompanyForm userId={userId} />
     </ResponsiveModal>
   );
 }

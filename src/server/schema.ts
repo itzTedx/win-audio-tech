@@ -20,7 +20,9 @@ export const UsersTable = pgTable("users", {
 export const CompaniesTable = pgTable("companies", {
   id: uuid().primaryKey().defaultRandom(),
   name: text("name").notNull(),
+  slug: text("slug").notNull().unique(),
   logo: text("logo"),
+  user: uuid("user_id").notNull().references(() => UsersTable.id),
   createdAt: timestamp("createdAt").defaultNow(),
   updatedAt: timestamp("updated_at")
     .defaultNow()

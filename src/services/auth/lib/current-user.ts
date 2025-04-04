@@ -16,7 +16,7 @@ export type FullUser = Exclude<
   undefined | null
 >;
 
-type User = Exclude<
+export type User = Exclude<
   Awaited<ReturnType<typeof getUserFromSession>>,
   undefined | null
 >;

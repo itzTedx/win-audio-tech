@@ -1,15 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
-import {
-  BookOpen,
-  Bot,
-  ChevronRight,
-  LayoutDashboard,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react";
+import { IconPackage } from "@tabler/icons-react";
+import { ChevronRight, LayoutDashboard, SquareTerminal } from "lucide-react";
 
 import {
   Collapsible,
@@ -27,7 +22,9 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 
-export function NavMain() {
+export function NavMain({}) {
+  const params = useParams<{ company: string }>();
+
   const items = [
     {
       title: "Bill",
@@ -50,74 +47,24 @@ export function NavMain() {
       ],
     },
     {
-      title: "Models",
+      title: "Products",
       url: "#",
-      icon: Bot,
+      icon: IconPackage,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "Products",
+          url: `/${params.company}/products`,
         },
         {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
+          title: "Categories",
+          url: `/${params.company}/products/categories`,
         },
       ],
     },
   ];
   return (
     <SidebarGroup>
-      <Link href="/">
+      <Link href={`/${params.company}/`}>
         <SidebarMenuButton tooltip="Dashboard">
           <LayoutDashboard />
           <span>Dashboard</span>

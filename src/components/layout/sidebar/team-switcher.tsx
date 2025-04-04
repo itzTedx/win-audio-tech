@@ -1,8 +1,10 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import * as React from "react";
 
-import { ChevronsUpDown, Plus } from "lucide-react";
+import { IconDotsVertical } from "@tabler/icons-react";
+import { Plus } from "lucide-react";
 import { parseAsBoolean, useQueryState } from "nuqs";
 
 import { Button } from "@/components/ui/button";
@@ -24,18 +26,29 @@ import { CompanyType } from "@/services/company/types";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 
-export function TeamSwitcher({ data }: { data: CompanyType[] }) {
+export function TeamSwitcher({
+  data,
+  userId,
+}: {
+  data: CompanyType[];
+  userId?: string;
+}) {
+  const router = useRouter();
   const [activeTeam, setActiveTeam] = React.useState(data[0]);
   const [_, setCompanyModal] = useQueryState(
     "companyModal",
     parseAsBoolean.withDefault(false)
   );
+  const [__, setUserId] = useQueryState("user");
 
   if (!activeTeam) {
     return (
       <Button
         variant="outline"
-        onClick={() => setCompanyModal(true)}
+        onClick={() => {
+          setCompanyModal(true);
+          setUserId(userId || null);
+        }}
         type="button"
       >
         <Plus className="size-4" />
@@ -63,7 +76,7 @@ export function TeamSwitcher({ data }: { data: CompanyType[] }) {
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{activeTeam.name}</span>
               </div>
-              <ChevronsUpDown className="ml-auto" />
+              <IconDotsVertical className="ml-auto" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -78,7 +91,10 @@ export function TeamSwitcher({ data }: { data: CompanyType[] }) {
             {data.map((team, index) => (
               <DropdownMenuItem
                 key={team.name}
-                onClick={() => setActiveTeam(team)}
+                onClick={() => {
+                  setActiveTeam(team);
+                  router.push(`/${team.slug}`);
+                }}
                 className="gap-2 p-2"
               >
                 <Avatar className="text-sidebar-primary-foreground flex aspect-square size-6 items-center justify-center rounded-lg">
@@ -96,7 +112,10 @@ export function TeamSwitcher({ data }: { data: CompanyType[] }) {
             <Button
               variant="ghost"
               type="button"
-              onClick={() => setCompanyModal(true)}
+              onClick={() => {
+                setCompanyModal(true);
+                setUserId(userId || null);
+              }}
               className="w-full justify-start px-2"
             >
               <div className="flex size-6 items-center justify-center rounded-md border">

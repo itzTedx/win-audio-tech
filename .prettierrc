@@ -8,7 +8,8 @@
     "^(react|next?/?([a-zA-Z/]*))$",
     "<THIRD_PARTY_MODULES>",
     "^@/(.*)$",
-    "^[./]"
+    "^[./]",
+    "^@/assets/(.*)$"
   ],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,

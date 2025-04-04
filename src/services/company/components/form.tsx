@@ -23,7 +23,7 @@ import {
 import { addNewCompany } from "../action";
 import { companySchema } from "../types";
 
-export function CompanyForm() {
+export function CompanyForm({ userId }: { userId: string }) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof companySchema>>({
@@ -42,7 +42,7 @@ export function CompanyForm() {
     setIsLoading(true);
 
     try {
-      const result = await addNewCompany(data);
+      const result = await addNewCompany(data, userId);
       if (typeof result !== "string" && result.success) {
         toast.success("Company Created!");
         setCompanyModal(false);
