@@ -1,9 +1,12 @@
 "use client";
 
+import Link from "next/link";
+
 import {
   BookOpen,
   Bot,
   ChevronRight,
+  LayoutDashboard,
   Settings2,
   SquareTerminal,
 } from "lucide-react";
@@ -27,22 +30,22 @@ import {
 export function NavMain() {
   const items = [
     {
-      title: "Playground",
+      title: "Bill",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Invoice",
+          url: "/invoice",
         },
         {
-          title: "Starred",
-          url: "#",
+          title: "Quotation",
+          url: "/quotation",
         },
         {
-          title: "Settings",
-          url: "#",
+          title: "Report",
+          url: "/report",
         },
       ],
     },
@@ -114,6 +117,12 @@ export function NavMain() {
   ];
   return (
     <SidebarGroup>
+      <Link href="/">
+        <SidebarMenuButton tooltip="Dashboard">
+          <LayoutDashboard />
+          <span>Dashboard</span>
+        </SidebarMenuButton>
+      </Link>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
