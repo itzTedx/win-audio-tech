@@ -23,6 +23,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${lufga.className} antialiased`}>
+        <noscript className="noscript:block hidden">
+          Please enable JavaScript to use this app.
+        </noscript>
         <NuqsAdapter>
           <ThemeProvider
             attribute="class"

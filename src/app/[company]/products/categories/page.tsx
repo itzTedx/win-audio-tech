@@ -76,7 +76,7 @@ export default async function Categories({
                 <TableCell>
                   <div
                     className="mr-3 inline-flex size-3 rounded-full"
-                    style={{ backgroundColor: category.color ?? "#000" }}
+                    style={{ backgroundColor: category.color || "#000" }}
                   />
                   <span>{category.title}</span>
                 </TableCell>
