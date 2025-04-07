@@ -55,6 +55,7 @@ export async function addNewProduct(
             title: data.title,
             sku: data.sku,
             slug: slugify(data.title),
+            categoryId: data.categoryId,
             image: data.image,
             price: data.price?.toString(),
             user: data.user,

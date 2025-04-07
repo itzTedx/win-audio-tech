@@ -19,16 +19,19 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { User } from "@/services/auth/lib/current-user";
+import { CategoryType } from "@/services/categories/types";
 
 import { addNewProduct } from "../action";
 import { ProductSchema } from "../types";
+import { CategoryField } from "./category-field";
 
 interface Props {
   isEditMode: boolean;
   user: User;
+  category?: CategoryType[];
 }
 
-export const ProductForm = ({ isEditMode, user }: Props) => {
+export const ProductForm = ({ isEditMode, user, category }: Props) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -58,6 +61,8 @@ export const ProductForm = ({ isEditMode, user }: Props) => {
     }
   }
 
+  const categoryId = form.getValues("categoryId");
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -81,7 +86,7 @@ export const ProductForm = ({ isEditMode, user }: Props) => {
             name="sku"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>sku</FormLabel>
+                <FormLabel>Item Code</FormLabel>
                 <FormControl>
                   <Input placeholder="AB-1234" {...field} />
                 </FormControl>
@@ -89,6 +94,7 @@ export const ProductForm = ({ isEditMode, user }: Props) => {
               </FormItem>
             )}
           />
+          <CategoryField data={category} categoryId={categoryId} />
           <FormField
             control={form.control}
             name="image"

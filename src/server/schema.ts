@@ -43,6 +43,9 @@ export const ProductsTable = pgTable("products", {
   id: uuid().primaryKey().defaultRandom(),
   title: text("title").notNull(),
   sku: text("title"),
+  categoryId: uuid("category_id")
+  .notNull()
+  .references(() => ProductCategoriesTable.id, { onDelete: "cascade" }),
   slug: text("slug").notNull().unique(),
   image: text("logo"),
 
