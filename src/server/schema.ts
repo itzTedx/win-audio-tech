@@ -41,12 +41,13 @@ export const CompaniesTable = pgTable("companies", {
 
 export const ProductsTable = pgTable("products", {
   id: uuid().primaryKey().defaultRandom(),
+  slug: text("slug").notNull().unique(),
   title: text("title").notNull(),
   sku: text("title"),
   categoryId: uuid("category_id")
-  .notNull()
-  .references(() => ProductCategoriesTable.id, { onDelete: "cascade" }),
-  slug: text("slug").notNull().unique(),
+    .notNull()
+    .references(() => ProductCategoriesTable.id, { onDelete: "cascade" }),
+  description: text("description"),
   image: text("logo"),
 
   price: numeric("price", { precision: 10, scale: 2 }),
@@ -62,12 +63,23 @@ export const ProductsTable = pgTable("products", {
 
 export const ProductCategoriesTable = pgTable("product_categories", {
   id: uuid().primaryKey().defaultRandom(),
-  title: text("name").notNull(),
+  title: text("title").notNull(),
   color: text("color"),
 
   user: uuid("user_id")
     .notNull()
     .references(() => UsersTable.id),
+  createdAt: timestamp("createdAt").defaultNow(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
+
+export const ProductUnitsTable = pgTable("product_units", {
+  id: uuid().primaryKey().defaultRandom(),
+  title: text("title").notNull(),
+  value: text("value").notNull(),
+
   createdAt: timestamp("createdAt").defaultNow(),
   updatedAt: timestamp("updated_at")
     .defaultNow()

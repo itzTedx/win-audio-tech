@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 
-import { IconCaretUpDownFilled } from "@tabler/icons-react";
+import { IconCaretUpDownFilled, IconPlus } from "@tabler/icons-react";
+import { parseAsBoolean, useQueryState } from "nuqs";
 import { useFormContext } from "react-hook-form";
 import { z } from "zod";
 
@@ -33,12 +34,19 @@ import { ProductSchema } from "../types";
 interface Props {
   data?: CategoryType[];
   categoryId: string;
+  userId: string;
 }
 
-export const CategoryField = ({ data, categoryId }: Props) => {
+export const CategoryField = ({ data, categoryId, userId }: Props) => {
   const [openPopover, setOpenPopover] = useState(false);
 
   const form = useFormContext<z.infer<typeof ProductSchema>>();
+
+  const [_, setCategoryModal] = useQueryState(
+    "categoryModal",
+    parseAsBoolean.withDefault(false)
+  );
+  const [__, setUserId] = useQueryState("user");
 
   // Memoize company lookup
   const selectedCategory = useMemo(() => {
@@ -91,11 +99,11 @@ export const CategoryField = ({ data, categoryId }: Props) => {
                 <CommandInput placeholder="Search Category..." />
                 <CommandEmpty>Company not found</CommandEmpty>
                 <CommandList className="max-h-[300px] overflow-auto">
-                  <CommandGroup heading="Companies">
+                  <CommandGroup heading="Category   ">
                     {data?.map((cat) => (
                       <CommandItem
                         value={cat.title}
-                        className="cursor-pointer gap-2.5 px-4 py-2.5 font-medium"
+                        className="cursor-pointer gap-2.5 px-2 py-2.5 font-medium"
                         key={cat.id}
                         onSelect={() => handleSelect(cat.id?.toString())}
                       >
@@ -103,9 +111,22 @@ export const CategoryField = ({ data, categoryId }: Props) => {
                       </CommandItem>
                     ))}
                   </CommandGroup>
-                  <CommandGroup heading="New Company?">
-                    <CommandItem className="cursor-pointer px-4 py-2.5 font-medium">
-                      Add new
+                  <CommandGroup heading="New Category?">
+                    <CommandItem className="cursor-pointer font-medium">
+                      <Button
+                        onClick={() => {
+                          setCategoryModal(true);
+                          setUserId(userId || null);
+                        }}
+                        type="button"
+                        variant="ghost"
+                        className="px-px"
+                      >
+                        <div className="flex size-6 items-center justify-center rounded-sm border">
+                          <IconPlus className="size-4" />
+                        </div>
+                        Add new
+                      </Button>
                     </CommandItem>
                   </CommandGroup>
                 </CommandList>
