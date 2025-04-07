@@ -8,6 +8,7 @@ import { z } from "zod";
 import { slugify } from "@/lib/utils";
 import { db } from "@/server/db";
 import { ProductsTable } from "@/server/schema";
+
 import { ProductSchema } from "./types";
 
 enum ProductError {
@@ -51,12 +52,12 @@ export async function addNewProduct(
         const [newProduct] = await tx
           .insert(ProductsTable)
           .values({
-           title: data.title,
-           sku: data.sku,
-           slug: slugify(data.title),
-           image: data.image,
-             price: data.price?.toString(),
-            user: data.user
+            title: data.title,
+            sku: data.sku,
+            slug: slugify(data.title),
+            image: data.image,
+            price: data.price?.toString(),
+            user: data.user,
           })
           .returning({
             id: ProductsTable.id,

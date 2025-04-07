@@ -5,11 +5,11 @@ import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 
+import { slugify } from "@/lib/utils";
 import { db } from "@/server/db";
 import { CompaniesTable } from "@/server/schema";
 
 import { companySchema } from "./types";
-import { slugify } from "./utils";
 
 enum CompanyError {
   INVALID_INPUT = "Invalid company information provided",
