@@ -41,11 +41,12 @@ export const CompaniesTable = pgTable("companies", {
 
 export const ProductsTable = pgTable("products", {
   id: uuid().primaryKey().defaultRandom(),
-  name: text("name").notNull(),
+  title: text("title").notNull(),
+  sku: text("title"),
   slug: text("slug").notNull().unique(),
   image: text("logo"),
 
-  price: numeric("price", { precision: 10, scale: 2 }).notNull(),
+  price: numeric("price", { precision: 10, scale: 2 }),
 
   user: uuid("user_id")
     .notNull()
