@@ -10,6 +10,9 @@ export const ProductSchema = z.object({
   description: z.string().optional(),
   image: z.string().optional(),
   price: z.number().optional(),
+  barcode: z.boolean().optional(),
+  unit: z.number().optional(),
+  
   user: z.string(),
 });
 

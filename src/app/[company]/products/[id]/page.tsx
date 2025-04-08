@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 
-import { Header } from "@/components/ui/header";
 import { getCurrentUser } from "@/services/auth/lib/current-user";
 import { getCategories } from "@/services/categories/action";
 import { ProductForm } from "@/services/products/components/form";
@@ -19,15 +18,6 @@ export default async function ProductCustomizePage({
   const isEditMode = id !== "create";
 
   return (
-    <div className="container py-6">
-      <Header title={`${isEditMode ? "Edit" : "Add"} Product`} withBackButton />
-      <section className="mt-6">
-        <ProductForm
-          isEditMode={isEditMode}
-          user={user}
-          category={categories}
-        />
-      </section>
-    </div>
+    <ProductForm isEditMode={isEditMode} user={user} category={categories} />
   );
 }

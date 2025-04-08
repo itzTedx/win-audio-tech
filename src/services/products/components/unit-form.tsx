@@ -20,8 +20,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { User } from "@/services/auth/lib/current-user";
 
-import { addNewProduct } from "../action";
-import { ProductSchema } from "../types";
+import { addUpdateUnit } from "../action";
+import { UnitSchema } from "../types";
 
 interface Props {
   isEditMode: boolean;
@@ -32,18 +32,18 @@ export const UnitForm = ({ isEditMode, user }: Props) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const form = useForm<z.infer<typeof ProductSchema>>({
+  const form = useForm<z.infer<typeof UnitSchema>>({
     defaultValues: {
       title: "",
-      sku: "",
+      value: "",
     },
   });
 
-  async function onSubmit(data: z.infer<typeof ProductSchema>) {
+  async function onSubmit(data: z.infer<typeof UnitSchema>) {
     setIsLoading(true);
 
     try {
-      const result = await addNewProduct(data, user.id);
+      const result = await addUpdateUnit(data);
       if (typeof result !== "string" && "success" in result) {
         toast.success("Category Created!");
         router.refresh();
@@ -78,7 +78,7 @@ export const UnitForm = ({ isEditMode, user }: Props) => {
           />
           <FormField
             control={form.control}
-            name="sku"
+            name="value"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Item Code</FormLabel>

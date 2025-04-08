@@ -9,7 +9,7 @@ import { slugify } from "@/lib/utils";
 import { db } from "@/server/db";
 import { ProductsTable } from "@/server/schema";
 
-import { ProductSchema } from "./types";
+import { ProductSchema, UnitSchema } from "./types";
 
 enum ProductError {
   INVALID_INPUT = "Invalid product information provided",
@@ -120,5 +120,72 @@ export async function getProductBySlug(slug: string) {
   } catch (error) {
     console.error("Product fetching error:", error);
     return { error: ProductError.DATABASE_ERROR };
+  }
+}
+
+export async function addUpdateUnit(
+  unsafeData: z.infer<typeof UnitSchema>,
+ 
+) {
+ 
+
+  try {
+    const { success, data, error } = ProductSchema.safeParse(unsafeData);
+
+    if (!success) {
+      const errorMessage = error.errors.map((err) => err.message).join(", ");
+      console.warn("Invalid product data:", errorMessage);
+      return { error: `${ProductError.INVALID_INPUT}: ${errorMessage}` };
+    }
+
+    // Start a transaction
+    return await db.transaction(async (tx) => {
+      try {
+        const existingProduct = await tx.query.ProductsTable.findFirst({
+          where: eq(ProductsTable.title, data.title),
+        });
+
+        if (existingProduct != null) {
+          console.warn(`Product already exists with title: ${data.title}`);
+          return { error: ProductError.PRODUCT_EXISTS };
+        }
+
+        const [newProduct] = await tx
+          .insert(ProductsTable)
+          .values({
+            title: data.title,
+            sku: data.sku,
+            slug: slugify(data.title),
+            categoryId: data.categoryId,
+            image: data.image,
+            price: data.price?.toString(),
+            user: data.user,
+          })
+          .returning({
+            id: ProductsTable.id,
+            title: ProductsTable.title,
+            slug: ProductsTable.slug,
+          });
+
+        if (!newProduct?.id) {
+          console.error(
+            "Product creation failed: No new product data returned"
+          );
+          return { error: ProductError.CREATION_FAILED };
+        }
+
+        revalidatePath("/products");
+        return {
+          success: "Product created successfully!",
+          slug: newProduct.slug,
+        };
+      } catch (error) {
+        console.error("Database operation failed:", error);
+        return { error: ProductError.DATABASE_ERROR };
+      }
+    });
+  } catch (error) {
+    console.error("Unhandled product creation error:", error);
+    return { error: ProductError.SYSTEM_ERROR };
   }
 }
